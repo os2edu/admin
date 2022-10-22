@@ -27,6 +27,25 @@ export default [
     component: './Dashboard',
   },
   {
+    path: '/course',
+    name: 'course',
+    icon: 'book',
+    routes: [
+      {
+        path: '/course',
+        component: './Course',
+      },
+      {
+        path: '/course/member-manage/:courseId',
+        component: './Course/MemberManage',
+      },
+      {
+        path: '/course/classroom-manage/:courseId',
+        component: './Course/ClassroomManage',
+      },
+    ],
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
@@ -42,12 +61,6 @@ export default [
         component: './Admin',
       },
     ],
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
   },
   {
     path: '/',

@@ -19,6 +19,13 @@ export default {
       // 依赖 origin 的功能可能需要这个，比如 cookie
       changeOrigin: true,
     },
+    '/maodou': {
+      target: 'https://admin.maodouketang.com:8443',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/maodou': '',
+      },
+    },
   },
   /**
    * @name 详细的代理配置
