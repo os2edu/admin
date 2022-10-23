@@ -46,6 +46,12 @@ export default [
     ],
   },
   {
+    path: '/homepage/conf',
+    name: 'homepage.conf',
+    icon: 'home',
+    component: './Homepage',
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
