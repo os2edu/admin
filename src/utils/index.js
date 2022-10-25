@@ -1,3 +1,6 @@
+import * as qiNiu from 'qiniu-js';
+import { genUpToken } from './qiNiuTokenUtil';
+
 /**
  * 表单必填规则配置项
  */
@@ -15,4 +18,52 @@ export function addListIndex(list, params, key = 'index') {
       [key]: (current - 1) * pageSize + index + 1,
     }))
   );
+}
+
+/**
+ * 七牛云文件上传token生成
+ */
+export function getFileUploadToken(bucketName) {
+  const policy = {
+    scope: bucketName,
+    deadline: Math.round(new Date().getTime() / 1000) + 3600,
+  };
+
+  return genUpToken(policy);
+}
+
+/**
+ * 文件上传到七牛云
+ */
+export async function fileUpload(file, bucketName = 'maodouketang') {
+  return new Promise((resolve, reject) => {
+    const token = getFileUploadToken(bucketName);
+    const config = {
+      useCdnDomain: true, //表示是否使用 cdn 加速域名，为布尔值，true 表示使用，默认为 false。
+      region: qiNiu.region.z3, // 根据具体提示修改上传地区,当为 null 或 undefined 时，自动分析上传域名区域
+    };
+
+    const observable = qiNiu.upload(file, null, token, {}, config);
+    observable.subscribe({
+      error: (err) => reject(err),
+      complete: (res) => resolve(res),
+    });
+  });
+}
+
+/**
+ * antd 框架分页参数转为api分页参数
+ */
+export function pageAntdToApi(params) {
+  if (!params) return;
+  const { pageSize, current, ...others } = params;
+  const size = pageSize ? { size: pageSize } : {};
+  const page = current ? { page: current - 1 } : {};
+  return {
+    params: {
+      ...others,
+      ...size,
+      ...page,
+    },
+  };
 }

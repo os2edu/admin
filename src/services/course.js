@@ -5,7 +5,10 @@ export async function fetchCourseList(params) {
   return request(
     '/seller/api/coursesget/getAllCoursesByConditionsWithTotal?clientId=385',
     {
-      params,
+      params: {
+        ...params,
+        isDelete: 1,
+      },
     },
   ).then((res) => ({
     data: addListIndex(res.courseList, params),
@@ -32,5 +35,39 @@ export async function fetchClassroomList(params) {
   ).then((res) => ({
     data: addListIndex(res, params),
     success: true,
+  }));
+}
+
+export async function createCourse(data) {
+  console.log('###############');
+  return request('/seller/api/courses', {
+    method: 'post',
+    data: {
+      teacher: '',
+      clientId: '385',
+      client: {},
+      isDelete: 1,
+      ...data,
+    },
+  });
+}
+
+export async function updateCourse(data) {
+  return request('/seller/api/courses/update', {
+    method: 'post',
+    data,
+  });
+}
+
+export async function fetchAllCourse() {
+  return request(
+    '/seller/api/coursesget/getAllCoursesByConditionsWithTotal?clientId=385',
+  ).then((res) => res.totalNum);
+}
+
+export async function fetchCourseInfo(id) {
+  return request(`/seller/api/courses/${id}`).then(({ coverUrl, ...res }) => ({
+    coverUrl: [{ url: coverUrl }],
+    ...res,
   }));
 }

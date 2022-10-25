@@ -1,92 +1,125 @@
-import { fetchCourseList } from '@/services/course';
+import { fetchCourseList, updateCourse } from '@/services/course';
+import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
-import { Button } from 'antd';
+import { Button, Popconfirm } from 'antd';
+import { useRef, useState } from 'react';
 import CourseManageForm from './components/CourseManageForm';
 
-const columns = [
-  {
-    title: '序号',
-    dataIndex: 'index',
-    align: 'center',
-    width: 80,
-  },
-  {
-    title: '课程名称',
-    dataIndex: 'title',
-    width: 400,
-    search: true,
-  },
-  {
-    title: '教室ID',
-    dataIndex: 'roomId',
-    align: 'center',
-  },
-  {
-    title: '主讲教师',
-    dataIndex: 'teacher',
-    align: 'center',
-  },
-  {
-    title: '报名人数',
-    dataIndex: 'applyCount',
-    align: 'center',
-  },
-  {
-    title: '课程价格',
-    dataIndex: 'price',
-    align: 'center',
-  },
-  {
-    title: '操作',
-    dataIndex: 'action',
-    align: 'center',
-    width: 200,
-    fixed: 'right',
-    render: (_, row) => (
-      <>
-        <Button
-          size="small"
-          type="link"
-          onClick={() => history.push(`/course/member-manage/${row.courseId}`)}
-        >
-          成员管理
-        </Button>
-        <Button
-          size="small"
-          type="link"
-          onClick={() =>
-            history.push(`/course/classroom-manage/${row.courseId}`)
-          }
-        >
-          课堂管理
-        </Button>
-        <CourseManageForm
-          title="编辑课程"
-          Trigger={(props) => (
-            <Button {...props} size="small" type="link">
-              编辑
+const columns = (openDrawer, tableRef) =>
+  [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      align: 'center',
+      width: 80,
+    },
+    {
+      title: '课程名称',
+      dataIndex: 'title',
+      width: 400,
+      search: true,
+    },
+    {
+      title: '教室ID',
+      dataIndex: 'roomId',
+      align: 'center',
+    },
+    {
+      title: '主讲教师',
+      dataIndex: 'teacher',
+      align: 'center',
+    },
+    {
+      title: '报名人数',
+      dataIndex: 'applyCount',
+      align: 'center',
+    },
+    {
+      title: '课程价格',
+      dataIndex: 'price',
+      align: 'center',
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      align: 'center',
+      width: 200,
+      fixed: 'right',
+      render: (_, row) => (
+        <>
+          <Button
+            size="small"
+            type="link"
+            onClick={() =>
+              history.push(`/course/member-manage/${row.courseId}`)
+            }
+          >
+            成员管理
+          </Button>
+          <Button
+            size="small"
+            type="link"
+            onClick={() =>
+              history.push(`/course/classroom-manage/${row.courseId}`)
+            }
+          >
+            课堂管理
+          </Button>
+          <Button onClick={() => openDrawer(row)} size="small" type="link">
+            编辑
+          </Button>
+          <Popconfirm
+            title="确定删除?"
+            onConfirm={() =>
+              updateCourse({ id: row.id, isDelete: 0 }).then(() => {
+                tableRef.current.reload();
+              })
+            }
+          >
+            <Button size="small" type="link" danger>
+              删除
             </Button>
-          )}
-        />
-        <Button size="small" type="link" danger>
-          删除
-        </Button>
-      </>
-    ),
-  },
-].map((item) => ({ search: false, width: 120, ...item }));
+          </Popconfirm>
+        </>
+      ),
+    },
+  ].map((item) => ({ search: false, width: 120, ...item }));
 
 export default () => {
+  const [drawerProps, setDrawerProps] = useState({ visible: false });
+  const tableRef = useRef();
+
+  const handleDrawerOpen = (row) => {
+    setDrawerProps({
+      visible: true,
+      id: row?.id,
+    });
+  };
   return (
     <PageContainer>
       <ProTable
-        pagination={{ pageSize: 20 }}
+        actionRef={tableRef}
+        pagination={null}
         rowKey="id"
-        columns={columns}
+        columns={columns(handleDrawerOpen, tableRef)}
         request={fetchCourseList}
         scroll={{ y: 458 }}
-        toolBarRender={() => <CourseManageForm />}
+        toolBarRender={() => (
+          <Button
+            onClick={() => handleDrawerOpen()}
+            key="button"
+            icon={<PlusOutlined />}
+            type="primary"
+          >
+            创建课程
+          </Button>
+        )}
+      />
+      <CourseManageForm
+        {...drawerProps}
+        tableReload={() => tableRef.current.reload()}
+        handleClose={() => setDrawerProps({ visible: false })}
       />
     </PageContainer>
   );

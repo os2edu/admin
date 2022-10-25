@@ -1,4 +1,5 @@
-﻿import type { RequestOptions } from '@@/plugin-request/request';
+﻿import { pageAntdToApi } from '@/utils';
+import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
 import { message, notification } from 'antd';
 
@@ -92,6 +93,7 @@ export const errorConfig: RequestConfig = {
       const url = config?.url;
       return {
         ...config,
+        ...pageAntdToApi(config.params),
         url: url?.startsWith('/api')
           ? url.concat('?token = 123')
           : `/maodou/${url}`,
