@@ -1,7 +1,7 @@
 import { fetchCourseList, updateCourse } from '@/services/course';
+import { history } from '@/utils';
 import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { history } from '@umijs/max';
 import { Button, Popconfirm } from 'antd';
 import { useRef, useState } from 'react';
 import CourseManageForm from './components/CourseManageForm';
@@ -61,7 +61,14 @@ const columns = (openDrawer, tableRef) =>
             size="small"
             type="link"
             onClick={() =>
-              history.push(`/course/classroom-manage/${row.courseId}`)
+              history.push({
+                pathname: `/course/classroom-manage/${row.courseId}`,
+                search: {
+                  courseName: row.title,
+                  roomId: row.roomId,
+                  courseId: row.courseId,
+                },
+              })
             }
           >
             课堂管理

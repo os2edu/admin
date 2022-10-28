@@ -37,7 +37,7 @@ export default ({ id, handleClose, tableReload, ...props }) => {
     manual: true,
   });
 
-  const { data: courseInfo = {}, run: runFci } = useRequest(fetchCourseInfo, {
+  const { run: runFci } = useRequest(fetchCourseInfo, {
     manual: true,
   });
 
@@ -83,7 +83,6 @@ export default ({ id, handleClose, tableReload, ...props }) => {
       initialValues={{
         web_site_name: 'all',
       }}
-      values={courseInfo}
       onFinish={handleSubmit}
     >
       <ProFormText

@@ -1,5 +1,6 @@
 import { addListIndex } from '@/utils';
 import { request } from '@umijs/max';
+import dayjs from 'dayjs';
 
 export async function fetchCourseList(params) {
   return request(
@@ -28,18 +29,41 @@ export async function fetchMemberList(params) {
   }));
 }
 
-export async function fetchClassroomList(params) {
+const statusFilterMap = {
+  ended: (rec) =>
+    rec.type === 2 && rec.endAt && dayjs(rec.startAt).isBefore(dayjs()),
+  notStarted: (rec) => rec.type === 2 && dayjs().isBefore(rec.startAt),
+  ongoing: (rec) =>
+    rec.type === 2 && !rec.endAt && dayjs(rec.startAt).isBefore(dayjs()),
+  video: (rec) => rec.type === 1,
+};
+
+const statusFilter = (status, record) => {
+  return status.find((item) => statusFilterMap[item](record));
+};
+
+export async function fetchClassroomList({ classroomStatus = [], ...params }) {
   return request(
-    '/seller/api/course-classes?page=0&size=1000&courseId.equals=101&clientId.equals=385&sort=startAt,desc&hasHomework=1',
+    '/seller/api/course-classes?page=0&size=1000&clientId.equals=385&sort=startAt,desc&hasHomework=1',
     { params },
-  ).then((res) => ({
-    data: addListIndex(res, params),
-    success: true,
-  }));
+  ).then((res) => {
+    const data = res.filter((item) => statusFilter(classroomStatus, item));
+    return {
+      data: addListIndex(data, params),
+      success: true,
+    };
+  });
+}
+
+export async function updateClassroomStatus(data) {
+  return request('/seller/api/course-classes/update', { method: 'post', data });
+}
+
+export async function deleteClassroom(id) {
+  return request(`/seller/api/course-classes/delete/${id}`);
 }
 
 export async function createCourse(data) {
-  console.log('###############');
   return request('/seller/api/courses', {
     method: 'post',
     data: {
@@ -70,4 +94,22 @@ export async function fetchCourseInfo(id) {
     coverUrl: [{ url: coverUrl }],
     ...res,
   }));
+}
+
+export async function fetchClassroomInfo(id) {
+  return request(`/seller/api/course-classes/${id}`);
+}
+
+export async function createClassroom(data) {
+  return request('/seller/api/course-classes', {
+    method: 'post',
+    data: { clientId: '385', ...data },
+  });
+}
+
+export async function updateClassroom(data) {
+  return request('/seller/api/course-classes/update', {
+    method: 'post',
+    data,
+  });
 }

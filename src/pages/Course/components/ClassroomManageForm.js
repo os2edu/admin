@@ -1,5 +1,9 @@
+import {
+  createClassroom,
+  fetchClassroomInfo,
+  updateClassroom,
+} from '@/services/course';
 import { requiredRule } from '@/utils';
-import { PlusOutlined } from '@ant-design/icons';
 import {
   DrawerForm,
   ProFormDateTimePicker,
@@ -7,21 +11,51 @@ import {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
-import { Button } from 'antd';
+import { useRequest, useSearchParams } from '@umijs/max';
+import { Form } from 'antd';
+import { isUndefined } from 'lodash';
+import { useEffect } from 'react';
 
-const DefaultTrigger = (props) => (
-  <Button {...props} key="button" icon={<PlusOutlined />} type="primary">
-    新增
-  </Button>
-);
+export default ({ id, course, handleClose, tableReload, ...props }) => {
+  const [form] = Form.useForm();
+  const { data = {}, run } = useRequest(fetchClassroomInfo, { manual: true });
+  const [searchParams] = useSearchParams();
 
-export default ({ title = '创建课程', Trigger = DefaultTrigger }) => {
+  useEffect(() => {
+    if (!isUndefined(id)) run(id).then(form.setFieldsValue);
+  }, [id]);
+
+  const handleSubmit = async (values) => {
+    return (
+      isUndefined(id)
+        ? createClassroom({
+            courseId: searchParams.get('courseId'),
+            roomId: searchParams.get('roomId'),
+            ...values,
+          })
+        : updateClassroom(values)
+    ).then(() => {
+      tableReload();
+      handleClose();
+    });
+  };
+
   return (
     <DrawerForm
-      drawerProps={{ maskClosable: false }}
-      title={title}
-      trigger={<Trigger />}
+      {...props}
+      form={form}
+      drawerProps={{
+        maskClosable: false,
+        onClose: handleClose,
+        destroyOnClose: true,
+      }}
+      title={isUndefined(id) ? '创建课程' : '编辑课程'}
       grid
+      initialValues={{
+        type: 2,
+      }}
+      values={data}
+      onFinish={handleSubmit}
     >
       <ProFormText
         name="className"
@@ -32,15 +66,15 @@ export default ({ title = '创建课程', Trigger = DefaultTrigger }) => {
         rules={requiredRule}
       />
       <ProFormSelect
-        name="title"
+        name="type"
         label="课堂类型"
         colProps={{ md: 24, xl: 12 }}
         required
         placeholder="请选择"
         rules={requiredRule}
         request={async () => [
-          { label: '互动直播课', value: 'all' },
-          { label: '视屏上传课', value: 'open' },
+          { label: '互动直播课', value: 2 },
+          { label: '视屏上传课', value: 1 },
         ]}
       />
       <ProFormText
@@ -68,6 +102,7 @@ export default ({ title = '创建课程', Trigger = DefaultTrigger }) => {
         placeholder="请输入"
         rules={requiredRule}
       />
+      <Form.Item name="id" noStyle />
     </DrawerForm>
   );
 };

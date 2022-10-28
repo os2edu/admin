@@ -96,7 +96,7 @@ export const errorConfig: RequestConfig = {
         ...pageAntdToApi(config.params),
         url: url?.startsWith('/api')
           ? url.concat('?token = 123')
-          : `/maodou/${url}`,
+          : `/maodou${url}`,
       };
     },
   ],

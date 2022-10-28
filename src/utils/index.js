@@ -1,4 +1,7 @@
+import { history as umiHistory } from '@umijs/max';
+import { isObject, isString } from 'lodash';
 import * as qiNiu from 'qiniu-js';
+import { stringify } from 'querystring';
 import { genUpToken } from './qiNiuTokenUtil';
 
 /**
@@ -67,3 +70,18 @@ export function pageAntdToApi(params) {
     },
   };
 }
+
+export const history = {
+  ...umiHistory,
+  push: (to, state) => {
+    !isString(to) && isObject(to?.search)
+      ? umiHistory.push(
+          {
+            ...to,
+            search: stringify(to.search),
+          },
+          state,
+        )
+      : umiHistory.push(to, state);
+  },
+};
