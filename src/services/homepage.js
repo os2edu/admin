@@ -10,3 +10,19 @@ export async function fetchTeacherList(params) {
     total: res.totalNum,
   }));
 }
+
+export async function fetchHomePageConf() {
+  return request('/seller/api/homepages?clientId.equals=385').then(([res]) => ({
+    ...res,
+    aboutUsImgUrl: [{ url: res.aboutUsImgUrl }],
+    consultUrl: [{ url: res.consultUrl }],
+    coverUrl: [{ url: res.coverUrl }],
+  }));
+}
+
+export async function updateHomePageConf(data) {
+  return request('/seller/api/homepages/update', {
+    method: 'post',
+    data,
+  });
+}

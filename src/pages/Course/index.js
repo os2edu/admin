@@ -52,7 +52,12 @@ const columns = (openDrawer, tableRef) =>
             size="small"
             type="link"
             onClick={() =>
-              history.push(`/course/member-manage/${row.courseId}`)
+              history.push({
+                pathname: `/course/member-manage/${row.courseId}`,
+                search: {
+                  uniCourseId: row.id,
+                },
+              })
             }
           >
             成员管理

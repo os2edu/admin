@@ -1,26 +1,58 @@
-import { requiredRule } from '@/utils';
+import { fetchHomePageConf, updateHomePageConf } from '@/services/homepage';
+import { fileUpload, requiredRule } from '@/utils';
 import {
   ProForm,
   ProFormText,
   ProFormTextArea,
   ProFormUploadButton,
 } from '@ant-design/pro-components';
+import { Form, message } from 'antd';
 
 export default () => {
+  const [form] = Form.useForm();
+  const handleImgUpload = (file, field) => {
+    fileUpload(file).then((res) => {
+      form.setFieldsValue({
+        [field]: [
+          Object.assign(file, {
+            url: `https://ssl.cdn.maodouketang.com/${res.key}`,
+          }),
+        ],
+      });
+    });
+  };
+
   return (
-    <ProForm labelCol={8} layout="horizontal" style={{ marginTop: 20 }} grid>
+    <ProForm
+      form={form}
+      onFinish={(values) => {
+        return updateHomePageConf({
+          ...values,
+          aboutUsImgUrl: values.aboutUsImgUrl[0].url,
+          consultUrl: values.consultUrl[0].url,
+          coverUrl: values.coverUrl[0].url,
+        }).then(() => {
+          message.success('保存成功');
+        });
+      }}
+      request={fetchHomePageConf}
+      labelCol={8}
+      layout="horizontal"
+      style={{ marginTop: 20 }}
+      grid
+    >
       <ProFormTextArea
-        name="desc"
+        name="aboutUsInfo"
         label="机构介绍"
         colProps={{ md: 24, xl: 24 }}
         required
         placeholder="请输入"
         labelCol={{ span: 2 }}
-        fieldProps={{ maxLength: 300, showCount: true }}
+        fieldProps={{ maxLength: 300, showCount: true, rows: 10 }}
         rules={requiredRule}
       />
       <ProFormUploadButton
-        name="coverUrl"
+        name="aboutUsImgUrl"
         label="机构介绍图片"
         max={1}
         required
@@ -30,11 +62,11 @@ export default () => {
         }}
         labelCol={{ span: 2 }}
         rules={requiredRule}
-        action="/upload.do"
+        action={(file) => handleImgUpload(file, 'aboutUsImgUrl')}
         extra="建议图片比例为16:9"
       />
       <ProFormUploadButton
-        name="coverUrl"
+        name="consultUrl"
         label="机构Logo"
         max={1}
         required
@@ -44,7 +76,7 @@ export default () => {
         }}
         labelCol={{ span: 2 }}
         rules={requiredRule}
-        action="/upload.do"
+        action={(file) => handleImgUpload(file, 'consultUrl')}
         extra="建议图片比例为16:9"
       />
       <ProFormUploadButton
@@ -58,17 +90,18 @@ export default () => {
         }}
         labelCol={{ span: 2 }}
         rules={requiredRule}
-        action="/upload.do"
+        action={(file) => handleImgUpload(file, 'coverUrl')}
         extra="建议图片比例为16:9"
       />
       <ProFormText
-        name="location"
+        name="icpInfo"
         label="一句话简介"
         labelCol={{ span: 2 }}
         required
         placeholder="请输入"
         rules={requiredRule}
       />
+      <Form.Item name="id" noStyle />
     </ProForm>
   );
 };

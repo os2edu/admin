@@ -29,6 +29,28 @@ export async function fetchMemberList(params) {
   }));
 }
 
+export async function addMember(data) {
+  return request('/seller/api/students', {
+    method: 'post',
+    data,
+  });
+}
+
+export async function updateMember(data) {
+  return request('/seller/api/students/update', {
+    method: 'post',
+    data,
+  });
+}
+
+export async function fetchMemberInfo(id) {
+  return request(`/seller/api/students/${id}`);
+}
+
+export async function deleteMember(id) {
+  return request(`/seller/api/students/${id}`, { method: 'delete' });
+}
+
 const statusFilterMap = {
   ended: (rec) =>
     rec.type === 2 && rec.endAt && dayjs(rec.startAt).isBefore(dayjs()),
