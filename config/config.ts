@@ -9,6 +9,7 @@ const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
   publicPath: '/admin/',
+  base: '/admin/',
   // outputPath: '/admin/',
   /**
    * @name 开启 hash 模式
