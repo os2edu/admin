@@ -91,12 +91,11 @@ export const errorConfig: RequestConfig = {
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
       const url = config?.url;
+      console.log(process.env);
       return {
         ...config,
         ...pageAntdToApi(config.params),
-        url: url?.startsWith('/api')
-          ? url.concat('?token = 123')
-          : `/maodou${url}`,
+        url: `https://admin.maodouketang.com:8443/${url}`,
       };
     },
   ],
