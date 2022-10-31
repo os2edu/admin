@@ -4,12 +4,14 @@ import { join } from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
+import { redirectScript } from './templateScript';
 
 const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
   publicPath: '/admin/',
   base: '/admin/',
+  headScripts: [redirectScript],
   // outputPath: '/admin/',
   /**
    * @name 开启 hash 模式
