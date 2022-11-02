@@ -115,7 +115,11 @@ export default ({ id, handleClose, tableReload, ...props }) => {
     <DrawerForm
       {...props}
       form={form}
-      drawerProps={{ maskClosable: false, onClose: handleClose }}
+      drawerProps={{
+        maskClosable: false,
+        onClose: handleClose,
+        destroyOnClose: true,
+      }}
       title={isUndefined(id) ? '添加成员' : '编辑成员'}
       grid
       onFinish={handleSubmit}

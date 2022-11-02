@@ -94,7 +94,7 @@ export const errorConfig: RequestConfig = {
       return {
         ...config,
         ...pageAntdToApi(config.params),
-        url: `https://admin.maodouketang.com:8443/${url}`,
+        url: `https://admin.maodouketang.com:8443${url}`,
       };
     },
   ],

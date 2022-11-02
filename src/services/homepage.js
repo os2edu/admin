@@ -26,3 +26,30 @@ export async function updateHomePageConf(data) {
     data,
   });
 }
+
+export async function fetchTeacherInfo(id) {
+  return request(`/seller/api/teachers/${id}`).then((res) => ({
+    ...res,
+    avatarUrl: [{ url: res.avatarUrl }],
+  }));
+}
+
+export async function updateTeacherInfo(data) {
+  return request('/seller/api/teachers/update', {
+    method: 'post',
+    data,
+  });
+}
+
+export async function addTeacherInfo(data) {
+  return request('/seller/api/teachers', {
+    method: 'post',
+    data,
+  });
+}
+
+export async function deleteTeacherInfo(id) {
+  return request(`/seller/api/teachers/${id}`, {
+    method: 'delete',
+  });
+}
