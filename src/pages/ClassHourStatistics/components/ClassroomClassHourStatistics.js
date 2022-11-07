@@ -1,4 +1,4 @@
-import { ProTable } from "@ant-design/pro-components";
+import { ProTable } from '@ant-design/pro-components';
 
 const columns = [
   {
@@ -34,10 +34,5 @@ const columns = [
 ];
 
 export default () => {
-  return (
-    <ProTable
-      search={false}
-      columns={columns}
-    />
-  );
-}
+  return <ProTable search={false} columns={columns} />;
+};

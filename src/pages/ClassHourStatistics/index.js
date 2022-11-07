@@ -1,8 +1,8 @@
-import { PageContainer } from "@ant-design/pro-components";
-import ClassroomClassHourStatistics from "./components/ClassroomClassHourStatistics";
-import ComprehensiveStatistics from "./components/ComprehensiveStatistics";
-import StudentClassHourStatistics from "./components/StudentClassHourStatistics";
-import TeacherClassHourStatistics from "./components/TeacherClassHourStatistics";
+import { PageContainer } from '@ant-design/pro-components';
+import ClassroomClassHourStatistics from './components/ClassroomClassHourStatistics';
+import ComprehensiveStatistics from './components/ComprehensiveStatistics';
+import StudentClassHourStatistics from './components/StudentClassHourStatistics';
+import TeacherClassHourStatistics from './components/TeacherClassHourStatistics';
 
 export default () => {
   return (

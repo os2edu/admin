@@ -1,5 +1,5 @@
-import { fetchClassroomList } from "@/services/course";
-import { ProTable } from "@ant-design/pro-components";
+import { fetchClassroomList } from '@/services/course';
+import { ProTable } from '@ant-design/pro-components';
 
 const columns = [
   {
@@ -21,7 +21,7 @@ const columns = [
     dataIndex: 'index',
     hideInTable: true,
     search: true,
-    request: fetchClassroomList
+    request: fetchClassroomList,
   },
   {
     title: '学生数',
@@ -93,7 +93,9 @@ export default () => {
     <ProTable
       columns={columns}
       search={{ labelWidth: 100 }}
-      headerTitle={<span style={{ color: '#1890ff' }}>时长统计 79小时10分9秒</span>}
+      headerTitle={
+        <span style={{ color: '#1890ff' }}>时长统计 79小时10分9秒</span>
+      }
     />
   );
-}
+};
